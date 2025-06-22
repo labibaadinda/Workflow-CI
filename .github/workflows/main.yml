@@ -40,6 +40,6 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t yourdockerhubusername/sleep-disorder-ci ./MLProject
+          docker build -t labibaadinda/sleep-disorder-ci ./MLProject
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker push yourdockerhubusername/sleep-disorder-ci
+          docker push labibaadinda/sleep-disorder-ci
