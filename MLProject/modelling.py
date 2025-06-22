@@ -2,10 +2,16 @@ import os
 import mlflow
 import mlflow.xgboost
 import pandas as pd
-import xgboost as xgb
 import joblib
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+try:
+    import xgboost as xgb
+except ImportError:
+    import subprocess
+    subprocess.check_call(["pip", "install", "xgboost"])
+    import xgboost as xgb
 
 
 def train_model():
