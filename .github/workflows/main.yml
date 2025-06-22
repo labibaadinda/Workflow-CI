@@ -1,1 +1,40 @@
+name: CI - Train XGBoost Sleep Disorder
 
+on:
+  push:
+    paths:
+      - 'MLProject/**'
+  workflow_dispatch:
+
+jobs:
+  train-model:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-activate-base: false
+          environment-file: MLProject/conda.yaml
+          activate-environment: sleep-env
+
+      - name: Train model with MLflow
+        working-directory: MLProject
+        run: |
+          pip install mlflow
+          mlflow run . --env-manager=local
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: trained-model
+          path: MLProject/xgboost_best_model.joblib
+
+      # - name: Build and Push Docker Image
+      #   run: |
+      #     docker build -t yourdockerhubusername/sleep-disorder-ci ./MLProject
+      #     echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      #     docker push yourdockerhubusername/sleep-disorder-ci
