@@ -5,6 +5,7 @@ import pandas as pd
 import joblib
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+import sys
 
 try:
     import xgboost as xgb
@@ -25,7 +26,16 @@ def train_model():
     # -----------------------------
     # Load dan siapkan dataset
     # -----------------------------
-    df = pd.read_csv("MLProject/sleep-health_life-style_preprocessing.csv")
+
+    file_path = (
+        sys.argv[1]
+        if len(sys.argv) > 1
+        else os.path.join(os.path.dirname(os.path.abspath(__file__)), "sleep-health_life-style_preprocessing.csv")
+    )
+
+    print(f"\n[INFO] Membaca dataset dari: {file_path}")
+    df = pd.read_csv(file_path)
+
     print("\n[INFO] Tipe data kolom:")
     print(df.dtypes)
 
