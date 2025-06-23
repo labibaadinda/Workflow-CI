@@ -30,7 +30,7 @@ jobs:
         working-directory: MLProject
         run: |
           pip install mlflow
-          mlflow run . --env-manager=local
+          mlflow run . --env-manager=local -P file_path=sleep-health_life-style_preprocessing.csv
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

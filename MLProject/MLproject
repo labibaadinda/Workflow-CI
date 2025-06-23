@@ -4,4 +4,6 @@ conda_env: conda.yaml
 
 entry_points:
   main:
+    parameters:
+      file_path: {type: str, default: "sleep-health_life-style_preprocessing.csv"}
     command: python modelling.py
