@@ -25,7 +25,7 @@ def train_model():
     # -----------------------------
     # Load dan siapkan dataset
     # -----------------------------
-    df = pd.read_csv("sleep-health_life-style_preprocessing.csv")
+    df = pd.read_csv("MLProject/sleep-health_life-style_preprocessing.csv")
     print("\n[INFO] Tipe data kolom:")
     print(df.dtypes)
 
