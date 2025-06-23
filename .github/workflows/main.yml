@@ -1,4 +1,4 @@
-name: CI - Train XGBoost Sleep Disorder
+name: CI - XGBoost Sleep Disorder
 
 on:
   push:
