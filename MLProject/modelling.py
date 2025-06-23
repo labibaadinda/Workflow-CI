@@ -1,11 +1,11 @@
 import os
+import sys
 import mlflow
 import mlflow.xgboost
 import pandas as pd
 import joblib
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-import sys
 
 try:
     import xgboost as xgb
@@ -15,27 +15,10 @@ except ImportError:
     import xgboost as xgb
 
 
-def train_model():
-    # Set tracking dan registry URI ke server MLflow
-    mlflow.set_tracking_uri("http://localhost:5000")
-    mlflow.set_registry_uri("http://localhost:5000")
-
-    # Aktifkan autologging MLflow untuk XGBoost
-    mlflow.xgboost.autolog(log_models=True)
-
-    # -----------------------------
-    # Load dan siapkan dataset
-    # -----------------------------
-
-    file_path = (
-        sys.argv[1]
-        if len(sys.argv) > 1
-        else os.path.join(os.path.dirname(os.path.abspath(__file__)), "sleep-health_life-style_preprocessing.csv")
-    )
-
+def train_model(file_path):
+    
     print(f"\n[INFO] Membaca dataset dari: {file_path}")
     df = pd.read_csv(file_path)
-
     print("\n[INFO] Tipe data kolom:")
     print(df.dtypes)
 
@@ -45,9 +28,7 @@ def train_model():
         X, y, test_size=0.2, random_state=42
     )
 
-    # -----------------------------
-    # Hyperparameter GridSearch
-    # -----------------------------
+    # Grid Search
     param_grid = {
         'objective': ['multi:softmax'],
         'num_class': [3],
@@ -73,35 +54,28 @@ def train_model():
         verbose=2
     )
 
-    # -----------------------------
-    # MLflow Tracking
-    # -----------------------------
     with mlflow.start_run():
         grid_search.fit(X_train, y_train)
 
         best_model = grid_search.best_estimator_
-        best_params = grid_search.best_params_
         best_score = grid_search.best_score_
 
-        # Evaluasi pada test set
         y_pred = best_model.predict(X_test)
         acc = accuracy_score(y_test, y_pred)
         prec = precision_score(y_test, y_pred, average='weighted')
         rec = recall_score(y_test, y_pred, average='weighted')
         f1 = f1_score(y_test, y_pred, average='weighted')
 
-        # Log tambahan ke MLflow
+        # Logging
         mlflow.log_metric("test_accuracy", acc)
         mlflow.log_metric("test_precision", prec)
         mlflow.log_metric("test_recall", rec)
         mlflow.log_metric("test_f1_score", f1)
 
-        # Simpan model lokal & log sebagai artifact
-        model_path = "xgboost_best_model.joblib"
-        joblib.dump(best_model, model_path)
-        mlflow.log_artifact(model_path)
+        joblib.dump(best_model, "xgboost_best_model.joblib")
+        mlflow.log_artifact("xgboost_best_model.joblib")
 
-        # Print hasil evaluasi
+        # Print
         print("\n--- Evaluation Results ---")
         print(f"Best CV Accuracy: {best_score:.4f}")
         print(f"Test Accuracy   : {acc:.4f}")
@@ -111,4 +85,10 @@ def train_model():
 
 
 if __name__ == "__main__":
-    train_model()
+    # Gunakan default path jika tidak ada parameter
+    file_path = (
+        sys.argv[1]
+        if len(sys.argv) > 1
+        else os.path.join(os.path.dirname(os.path.abspath(__file__)), "sleep-health_life-style_preprocessing.csv")
+    )
+    train_model(file_path)
