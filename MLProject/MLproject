@@ -1,4 +1,4 @@
-name: sleep-disorder-xgboost
+name: sleep-disorder-xgboost-model
 
 conda_env: conda.yaml
 
