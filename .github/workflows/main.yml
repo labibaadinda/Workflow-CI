@@ -54,7 +54,7 @@ jobs:
       # Build Docker Image with the model
       - name: Build Docker Image
         run: |
-          mlflow models build-docker --model-uri "runs:0/$RUN_ID/artifacts" --name "xgb_model_image:latest"
+          mlflow models build-docker --model-uri "runs:/$RUN_ID/artifacts" --name "xgb_model_image:latest"
 
 
       # Login to Docker Hub
