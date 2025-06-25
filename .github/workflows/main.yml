@@ -48,9 +48,9 @@ jobs:
       # Tag Docker image
       - name: Tag Docker Image
         run: |
-          docker tag stunting-detection-cc ${{ secrets.DOCKER_HUB_USERNAME }}/stunting-detection-cc:latest
+          docker tag stunting-detection-cc ${{ secrets.DOCKER_HUB_USERNAME }}/xgb_model_image
 
       # Push Docker image ke Docker Hub
       - name: Push Docker Image
         run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/stunting-detection-cc:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/xgb_model_image
