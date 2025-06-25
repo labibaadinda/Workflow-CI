@@ -39,7 +39,7 @@ jobs:
       # Verify model file exists before uploading
       - name: Verify Model File Exists
         run: |
-          if [ -f "MLProject/xgboost_best_model.joblib" ]; then
+          if [ -f "xgboost_best_model.joblib" ]; then
             echo "Model file exists!";
           else
             echo "Model file not found!";
@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: trained-model
-          path: MLProject/xgboost_best_model.joblib
+          path: /xgboost_best_model.joblib
 
       # Download artifact
       - name: Download artifact
@@ -68,7 +68,6 @@ jobs:
       # Build Docker Image with model
       - name: Build Docker Image with Debugging
         run: |
-          # Ensure the model file exists after downloading
           if [ -f "xgboost_best_model.joblib" ]; then
             echo "Model file downloaded successfully!";
             mlflow models build-docker -m "file://$(pwd)/xgboost_best_model.joblib" --name xgb_model_image --no-conda --verbose;
@@ -93,7 +92,3 @@ jobs:
       - name: Push Docker Image
         run: |
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/xgb_model_image:latest
-
-      # Log out from Docker Hub
-      - name: Log out from Docker Hub
-        uses: docker/logout-action@v1
