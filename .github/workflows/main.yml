@@ -7,9 +7,7 @@ on:
   pull_request:
     branches:
       - main
-
 env:
-  MLFLOW_TRACKING_URI: "http://localhost:5000"  # Replace with actual URL
   CSV_URL: "MLProject/sleep-health_life-style_preprocessing.csv"
   TARGET_VAR: "Sleep Disorder"
 
@@ -40,10 +38,13 @@ jobs:
           name: trained-model
           path: MLProject/xgboost_best_model.joblib
 
-      # Build Docker Image with MLflow model
-      - name: Build Docker Image
-        run: |
-          mlflow models build-docker -m "models:/SleepDisorderXGBoostModel/1" --name xgb_model_image
+      - name: Build and push Docker image
+        uses: mr-smithers-excellent/docker-build-push@v3
+        with:
+          image: labibaadinda/xgb_model_image
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       # Login to Docker Hub
       - name: Log in to Docker Hub
