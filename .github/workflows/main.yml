@@ -41,12 +41,12 @@ jobs:
       - name: Debug mlruns directory contents
         run: |
           echo "mlruns directory contents:"
-          ls -l mlruns/0/models/
+          ls -l mlruns/0/7dc6790fe1754584ab966185f8613834/artifacts/
 
 
       - name: Get latest MLflow run_id
         run: |
-          RUN_ID=$(ls -t mlruns/0/models/ | head -n 1)
+          RUN_ID=$(ls -t mlruns/0/7dc6790fe1754584ab966185f8613834/artifacts/ | head -n 1)
           echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
           echo "Latest run_id: $RUN_ID"
 
@@ -54,7 +54,7 @@ jobs:
       # Build Docker Image with the model
       - name: Build Docker Image
         run: |
-          mlflow models build-docker --model-uri "runs:/$RUN_ID/artifacts" --name "xgb_model_image:latest"
+          mlflow models build-docker --model-uri "runs:/artifacts/$RUN_ID/" --name "xgb_model_image:latest"
 
 
       # Login to Docker Hub
