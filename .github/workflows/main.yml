@@ -12,39 +12,66 @@ env:
   TARGET_VAR: "Sleep Disorder"
 
 jobs:
-  train-model:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      # Checks-out your repository under $GITHUB_WORKSPACE
+      - uses: actions/checkout@v3
 
-      - name: Set up Miniconda
-        uses: conda-incubator/setup-miniconda@v2
+      # Setup Python 3.9.2
+      - name: Set up Python 3.9.2
+        uses: actions/setup-python@v4
         with:
-          auto-activate-base: false
-          environment-file: MLProject/conda.yaml
-          activate-environment: sleep-env
-
-      - name: Train model with MLflow
-        working-directory: MLProject
+          python-version: "3.9.2"
+      
+      # Check Env Variables
+      - name: Check Env
         run: |
-          pip install mlflow
-          mlflow run . --env-manager=local -P file_path=sleep-health_life-style_preprocessing.csv
+          echo $CSV_URL
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: trained-model
-          path: MLProject/xgboost_best_model.joblib
+      # Install mlflow
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mlflow  
+          
+      # Run as a mlflow project
+      - name: Run mlflow project
+        run: |
+          mlflow run MLProject --env-manager=local 
 
-      - name: Build and push Docker image
-        uses: mr-smithers-excellent/docker-build-push@v3
-        with:
-          image: labibaadinda/xgb_model_image
-          registry: docker.io
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      # Git LFS
+      - name: Set up Git LFS
+        run: |
+           git config --global user.name ${{ secrets.username }}
+           git config --global user.email ${{ secrets.email }}
+           git lfs install
+           git lfs track "mlruns/**"
+           git add .gitattributes
+           git commit -m "Track large files in mlruns with Git LFS" || true
+           git push origin main
+      
+      # Save models to GitHub Repository
+      - name: Save mlruns to repo
+        run: |
+          git config --global user.name ${{ secrets.username }}
+          git config --global user.email ${{ secrets.email }}
+          git add -f mlruns/
+          git commit -m "Save mlruns from CI run" || true
+          git push origin main
+
+      # Get latest run_id
+      - name: Get latest MLflow run_id
+        run: |
+          RUN_ID=$(ls -td mlruns/0/*/ | head -n 1 | cut -d'/' -f3)
+          echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
+          echo "Latest run_id: $RUN_ID"
+          
+      # Build Docker Model
+      - name: Build Docker Model
+        run: |
+          mlflow models build-docker --model-uri "runs:/$RUN_ID/model" --name "xgb_model_image:latest" 
 
       # Login to Docker Hub
       - name: Log in to Docker Hub
@@ -53,12 +80,12 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      # Tag Docker Image
+      # Tag the Docker image
       - name: Tag Docker Image
         run: |
-          docker tag xgb_model_image ${{ secrets.DOCKER_HUB_USERNAME }}/xgb_model_image:latest
+          docker tag xgb_model_image:latest" ${{ secrets.DOCKER_HUB_USERNAME }}/xgb_model_image:latest":latest
 
-      # Push Docker Image to Docker Hub
+      # Push Docker image to Docker Hub
       - name: Push Docker Image
         run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/xgb_model_image:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/xgb_model_image:latest":latest
