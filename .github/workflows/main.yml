@@ -41,7 +41,8 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t labibaadinda/xgb_model_image:latest -f MLProject/Dockerfile .
+          docker build -t labibaadinda/xgb_model_image:latest .
+
 
 
       # Login to Docker Hub
