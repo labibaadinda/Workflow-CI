@@ -38,7 +38,6 @@ jobs:
           name: trained-model
           path: MLProject/xgboost_best_model.joblib
 
-
       # Login to Docker Hub (without ecr: auto)
       - name: Log in to Docker Hub
         uses: github-workflow-xgbmodel
