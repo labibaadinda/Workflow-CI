@@ -93,6 +93,7 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/xgb_model_image:latest
 
-      # Log out from Docker Hub
+      # Log out from Docker Hub (Replaced with shell command)
       - name: Log out from Docker Hub
-        uses: docker/logout-action@v1
+        run: |
+          docker logout
