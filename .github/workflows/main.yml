@@ -42,7 +42,7 @@ jobs:
       # Build Docker Image
       - name: Build Docker Image
         run: |
-          docker build -t labibaadinda/xgb_model_image:latest
+          mlflow models build-docker -m "models:/SleepDisorderXGBoostModel/1" --name xgb_model_image
 
       # Login to Docker Hub
       - name: Log in to Docker Hub
