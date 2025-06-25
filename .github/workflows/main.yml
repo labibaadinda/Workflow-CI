@@ -19,11 +19,11 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE
       - uses: actions/checkout@v3
 
-      # Setup Python 3.9.2
-      - name: Set up Python 3.9.2
+      # Setup Python 3.9
+      - name: Set up Python 3.9
         uses: actions/setup-python@v4
         with:
-          python-version: "3.9.2"
+          python-version: "3.9"
       
       # Check Env Variables
       - name: Check Env
