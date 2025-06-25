@@ -39,10 +39,10 @@ jobs:
           name: trained-model
           path: MLProject/xgboost_best_model.joblib
 
-      # Build Docker Image
       - name: Build Docker Image
         run: |
-          docker build -t labibaadinda/xgb_model_image:latest .
+          docker build -t labibaadinda/xgb_model_image:latest -f MLProject/Dockerfile .
+
 
       # Login to Docker Hub
       - name: Log in to Docker Hub
