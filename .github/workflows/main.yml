@@ -37,3 +37,20 @@ jobs:
         with:
           name: trained-model
           path: MLProject/xgboost_best_model.joblib
+
+      # Login ke Docker Hub
+      - name: Log in ke Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # Tag Docker image
+      - name: Tag Docker Image
+        run: |
+          docker tag stunting-detection-cc ${{ secrets.DOCKER_HUB_USERNAME }}/stunting-detection-cc:latest
+
+      # Push Docker image ke Docker Hub
+      - name: Push Docker Image
+        run: |
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/stunting-detection-cc:latest

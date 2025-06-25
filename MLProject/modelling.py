@@ -16,7 +16,6 @@ except ImportError:
 
 
 def train_model(file_path):
-    
     print(f"\n[INFO] Membaca dataset dari: {file_path}")
     df = pd.read_csv(file_path)
     print("\n[INFO] Tipe data kolom:")
@@ -28,7 +27,6 @@ def train_model(file_path):
         X, y, test_size=0.2, random_state=42
     )
 
-    # Grid Search
     param_grid = {
         'objective': ['multi:softmax'],
         'num_class': [3],
@@ -54,7 +52,7 @@ def train_model(file_path):
         verbose=2
     )
 
-    with mlflow.start_run():
+    with mlflow.start_run() as run:
         grid_search.fit(X_train, y_train)
 
         best_model = grid_search.best_estimator_
@@ -66,12 +64,20 @@ def train_model(file_path):
         rec = recall_score(y_test, y_pred, average='weighted')
         f1 = f1_score(y_test, y_pred, average='weighted')
 
-        # Logging
+        # Logging metrics
         mlflow.log_metric("test_accuracy", acc)
         mlflow.log_metric("test_precision", prec)
         mlflow.log_metric("test_recall", rec)
         mlflow.log_metric("test_f1_score", f1)
 
+        # Logging model (automatic + registry)
+        mlflow.xgboost.log_model(
+            xgb_model=best_model,
+            artifact_path="xgboost-model",
+            registered_model_name="SleepDisorderXGBoostModel"  # This will register the model
+        )
+
+        # Optional: Save local backup
         joblib.dump(best_model, "xgboost_best_model.joblib")
         mlflow.log_artifact("xgboost_best_model.joblib")
 
@@ -83,9 +89,10 @@ def train_model(file_path):
         print(f"Recall          : {rec:.4f}")
         print(f"F1 Score        : {f1:.4f}")
 
+        print(f"\n[INFO] Model registered as 'SleepDisorderXGBoostModel' with run ID: {run.info.run_id}")
+
 
 if __name__ == "__main__":
-    # Gunakan default path jika tidak ada parameter
     file_path = (
         sys.argv[1]
         if len(sys.argv) > 1

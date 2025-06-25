@@ -1,0 +1,1 @@
+https://hub.docker.com/r/labibaadinda/xgb_model_image
