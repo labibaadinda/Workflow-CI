@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+
 env:
   CSV_URL: "MLProject/sleep-health_life-style_preprocessing.csv"
   TARGET_VAR: "Sleep Disorder"
@@ -16,9 +17,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Set up Miniconda and environment
       - name: Set up Miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
@@ -26,27 +29,41 @@ jobs:
           environment-file: MLProject/conda.yaml
           activate-environment: sleep-env
 
+      # Train model with MLflow
       - name: Train model with MLflow
         working-directory: MLProject
         run: |
           pip install mlflow
           mlflow run . --env-manager=local -P file_path=sleep-health_life-style_preprocessing.csv
 
+      # Verify model file exists before uploading
+      - name: Verify Model File Exists
+        run: |
+          if [ -f "MLProject/xgboost_best_model.joblib" ]; then echo "Model file exists!"; else echo "Model file not found!"; fi
+
+      # Upload trained model artifact
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: trained-model
           path: MLProject/xgboost_best_model.joblib
 
+      # Download artifact
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: trained-model
 
+      # List downloaded files
+      - name: List downloaded files
+        run: |
+          echo "Listing files in the current directory"
+          ls -l
+
+      # Build Docker Image with model
       - name: Build Docker Image with Debugging
         run: |
-          mlflow models build-docker -m "models:/SleepDisorderXGBoostModel/1" --name xgb_model_image
-          docker run -p 5001:8080 --entrypoint /bin/bash xgb_model_image
+          mlflow models build-docker -m "file://$(pwd)/trained-model/xgboost_best_model.joblib" --name xgb_model_image
 
       # Login to Docker Hub
       - name: Log in to Docker Hub
@@ -55,7 +72,7 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      # Tag the Docker image
+      # Tag Docker Image
       - name: Tag Docker Image
         run: |
           docker tag xgb_model_image:latest ${{ secrets.DOCKER_HUB_USERNAME }}/xgb_model_image:latest
