@@ -20,6 +20,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE
       - uses: actions/checkout@v3
 
+      - name: Print RUN_ID
+        run: echo "RUN_ID=$RUN_ID"
+
+
       # Setup Python 3.9
       - name: Set up Python 3.9
         uses: actions/setup-python@v4
