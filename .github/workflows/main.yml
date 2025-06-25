@@ -11,6 +11,7 @@ on:
 env:
   CSV_URL: "MLProject/sleep-health_life-style_preprocessing.csv"
   TARGET_VAR: "Sleep Disorder"
+  MLFLOW_TRACKING_URI: "http://127.0.0.1/:5000" # Add this line if using a remote server
 
 jobs:
   train-model:
@@ -39,24 +40,20 @@ jobs:
           name: trained-model
           path: MLProject/xgboost_best_model.joblib
 
-      # Build Docker Image with MLflow model
       - name: Build Docker Image
         run: |
           mlflow models build-docker -m "models:/SleepDisorderXGBoostModel/1" --name xgb_model_image
 
-      # Login to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      # Tag Docker Image
       - name: Tag Docker Image
         run: |
           docker tag xgb_model_image ${{ secrets.DOCKER_HUB_USERNAME }}/xgb_model_image:latest
 
-      # Push Docker Image to Docker Hub
       - name: Push Docker Image
         run: |
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/xgb_model_image:latest
