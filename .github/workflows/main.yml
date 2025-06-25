@@ -65,7 +65,7 @@ jobs:
           echo "Listing files in the current directory"
           ls -l
 
-      # Build Docker Image with model
+      # Build Docker Image with Debugging
       - name: Build Docker Image with Debugging
         run: |
           if [ -f "xgboost_best_model.joblib" ]; then
@@ -92,3 +92,7 @@ jobs:
       - name: Push Docker Image
         run: |
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/xgb_model_image:latest
+
+      # Log out from Docker Hub
+      - name: Log out from Docker Hub
+        uses: docker/logout-action@v1
