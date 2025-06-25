@@ -70,7 +70,7 @@ jobs:
         run: |
           if [ -f "xgboost_best_model.joblib" ]; then
             echo "Model file downloaded successfully!";
-            mlflow models build-docker -m "file://$(pwd)/xgboost_best_model.joblib" --name xgb_model_image --verbose;
+            mlflow models build-docker -m "file://$(pwd)/xgboost_best_model.joblib" --name xgb_model_image;
           else
             echo "Model file not found in the downloaded artifact!";
             exit 1;
