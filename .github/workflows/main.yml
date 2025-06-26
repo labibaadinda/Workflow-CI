@@ -46,35 +46,24 @@ jobs:
             exit 1;
           fi
 
-      # Upload trained model artifact
-      - name: Upload artifact
+      # Upload trained MLflow model directory
+      - name: Upload MLflow model directory
         uses: actions/upload-artifact@v4
         with:
-          name: trained-model
-          path: xgboost_best_model.joblib
+          name: mlflow-model-dir
+          path: xgboost_model_dir
 
-      # Download artifact
-      - name: Download artifact
+      # Download trained MLflow model directory
+      - name: Download MLflow model directory
         uses: actions/download-artifact@v4
         with:
-          name: trained-model
+          name: mlflow-model-dir
 
-      # List downloaded files to verify the artifact is there
-      - name: List downloaded files
+      # Build Docker image from MLflow model directory
+      - name: Build Docker Image with MLflow model
         run: |
-          echo "Listing files in the current directory"
-          ls -l
+          mlflow models build-docker -m "file://$(pwd)/xgboost_model_dir" --name xgb_model_image
 
-      # Build Docker Image with model
-      - name: Build Docker Image with Debugging
-        run: |
-          if [ -f "xgboost_best_model.joblib" ]; then
-            echo "Model file downloaded successfully!";
-            mlflow models build-docker -m "file://$(pwd)/xgboost_best_model.joblib" --name xgb_model_image;
-          else
-            echo "Model file not found in the downloaded artifact!";
-            exit 1;
-          fi
 
       # Login to Docker Hub
       - name: Log in to Docker Hub

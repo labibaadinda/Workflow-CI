@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/Asus/Documents/Dicoding/membangun-sistem-ml/SMSML_Labiba-Adinda-Zahwana/Workflow-CI/mlruns/0/43ba8439df69463c9f79bd73d128c29c/artifacts
+end_time: 1750922317108
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 43ba8439df69463c9f79bd73d128c29c
+run_name: abundant-elk-982
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1750922307409
+status: 3
+tags: []
+user_id: Asus

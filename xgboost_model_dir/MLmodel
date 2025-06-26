@@ -1,4 +1,3 @@
-artifact_path: file:///C:/Users/Asus/Documents/Dicoding/membangun-sistem-ml/SMSML_Labiba-Adinda-Zahwana/Workflow-CI/mlruns/0/models/m-8401adc03e2046c683b3a5a833262d10/artifacts
 flavors:
   python_function:
     data: model.xgb
@@ -14,9 +13,8 @@ flavors:
     model_format: xgb
     xgb_version: 2.1.4
 mlflow_version: 3.1.0
-model_id: m-8401adc03e2046c683b3a5a833262d10
+model_id: null
 model_size_bytes: 150473
-model_uuid: m-8401adc03e2046c683b3a5a833262d10
+model_uuid: 03c404d423694d32bf2ef8092aa762c3
 prompts: null
-run_id: 7dc6790fe1754584ab966185f8613834
-utc_time_created: '2025-06-25 05:20:32.374979'
+utc_time_created: '2025-06-26 07:18:31.945302'

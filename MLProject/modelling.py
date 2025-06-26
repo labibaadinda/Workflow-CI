@@ -64,32 +64,30 @@ def train_model(file_path):
         rec = recall_score(y_test, y_pred, average='weighted')
         f1 = f1_score(y_test, y_pred, average='weighted')
 
-        # Logging metrics
+        # Logging metrics to MLflow
         mlflow.log_metric("test_accuracy", acc)
         mlflow.log_metric("test_precision", prec)
         mlflow.log_metric("test_recall", rec)
         mlflow.log_metric("test_f1_score", f1)
 
-        # Logging model (automatic + registry)
-        mlflow.xgboost.log_model(
-            xgb_model=best_model,
-            artifact_path="xgboost-model",
-            registered_model_name="SleepDisorderXGBoostModel"  # This will register the model
+        # Save model to local directory (for Docker)
+        mlflow.xgboost.save_model(
+            best_model,
+            path="xgboost_model_dir"
         )
 
-        # Optional: Save local backup
+        # Optional: Save backup model file
         joblib.dump(best_model, "xgboost_best_model.joblib")
         mlflow.log_artifact("xgboost_best_model.joblib")
 
-        # Print
         print("\n--- Evaluation Results ---")
         print(f"Best CV Accuracy: {best_score:.4f}")
         print(f"Test Accuracy   : {acc:.4f}")
         print(f"Precision       : {prec:.4f}")
         print(f"Recall          : {rec:.4f}")
         print(f"F1 Score        : {f1:.4f}")
-
-        print(f"\n[INFO] Model registered as 'SleepDisorderXGBoostModel' with run ID: {run.info.run_id}")
+        print(f"[INFO] MLflow run ID: {run.info.run_id}")
+        print(f"[INFO] Model saved to: ./xgboost_model_dir")
 
 
 if __name__ == "__main__":
