@@ -1,4 +1,8 @@
-# Sleep Health Prediction System: XGBoost Model
+Berikut adalah revisi dan perbaikan pada README Anda:
+
+---
+
+# **Sleep Health Prediction System: XGBoost Model**
 
 **Deskripsi Proyek:**
 
@@ -6,7 +10,7 @@ Proyek ini bertujuan untuk memprediksi gangguan tidur berdasarkan data gaya hidu
 
 ---
 
-## Fitur Utama
+## **Fitur Utama**
 
 * **Model XGBoost:** Menggunakan XGBoost untuk membangun model prediksi gangguan tidur.
 * **CI/CD dengan GitHub Actions:** CI digunakan untuk otomatisasi pengujian dan deployment.
@@ -14,20 +18,19 @@ Proyek ini bertujuan untuk memprediksi gangguan tidur berdasarkan data gaya hidu
 
 ---
 
-## Struktur Proyek
+## **Struktur Proyek**
 
 1. **MLProject/**: Folder yang berisi kode dan konfigurasi untuk pelatihan model.
 
    * `modelling.py`: Kode untuk pelatihan model menggunakan XGBoost.
    * `conda.yaml`: File yang mendefinisikan lingkungan Python yang dibutuhkan untuk proyek.
 2. **Workflow-CI/**: Folder berisi konfigurasi GitHub Actions untuk Continuous Integration.
-3. **Data/**: Folder berisi data mentah yang digunakan dalam pelatihan.
-4. **Dockerfile (optional)**: Jika ingin menggunakan Docker untuk deployment model.
-``https://hub.docker.com/r/labibaadinda/xgb_model_image``
+3. **Dockerfile**: Jika ingin menggunakan Docker untuk deployment model.
+   Link: [Docker Hub](https://hub.docker.com/r/labibaadinda/xgb_model_image)
 
 ---
 
-## Persyaratan
+## **Persyaratan**
 
 1. **Python 3.9.2**
 2. **XGBoost**
@@ -36,7 +39,7 @@ Proyek ini bertujuan untuk memprediksi gangguan tidur berdasarkan data gaya hidu
 
 ---
 
-## Setup dan Instalasi
+## **Setup dan Instalasi**
 
 ### 1. Clone repositori ini ke mesin lokal Anda:
 
@@ -60,7 +63,7 @@ pip install -r requirements.txt
 
 ---
 
-## Pelatihan Model
+## **Pelatihan Model**
 
 Proyek ini menggunakan **MLflow** untuk melatih model dan menyimpan artefak pelatihan. Anda dapat melatih model menggunakan file `modelling.py`.
 
@@ -74,7 +77,7 @@ python MLProject/modelling.py
 
 ---
 
-## Workflow CI dengan GitHub Actions
+## **Workflow CI dengan GitHub Actions**
 
 Proyek ini menggunakan **GitHub Actions** untuk otomatisasi pengujian, pembangunan, dan deployment model.
 
@@ -83,6 +86,7 @@ Proyek ini menggunakan **GitHub Actions** untuk otomatisasi pengujian, pembangun
 1. **CI Pipeline Trigger:**
 
    * Workflow akan dijalankan setiap kali ada perubahan pada branch `main` atau pull request yang mengarah ke branch tersebut.
+
 2. **Langkah-langkah Workflow:**
 
    * **Checkout repository:** Mengambil kode dari repositori GitHub.
@@ -99,32 +103,28 @@ File konfigurasi workflow berada pada `Workflow-CI/main.yml`.
 
 ---
 
-## Penggunaan Docker
+## **Penggunaan Docker**
 
 1. **Build Docker image dari model yang telah dilatih:**
 
-   ```bash
-   mlflow models build-docker -m "file://$(pwd)/xgboost_model_dir" --name xgb_model_image
-   ```
+```bash
+mlflow models build-docker -m "file://$(pwd)/xgboost_model_dir" --name xgb_model_image
+```
 
 2. **Login ke Docker Hub dan push image ke Docker Hub:**
 
-   ```bash
-   docker login -u <your-docker-hub-username> -p <your-docker-hub-access-token>
-   docker tag xgb_model_image:latest <your-docker-hub-username>/xgb_model_image:latest
-   docker push <your-docker-hub-username>/xgb_model_image:latest
-   ```
+```bash
+docker login -u <your-docker-hub-username> -p <your-docker-hub-access-token>
+docker tag xgb_model_image:latest <your-docker-hub-username>/xgb_model_image:latest
+docker push <your-docker-hub-username>/xgb_model_image:latest
+```
 
 ---
 
-## Kontribusi
 
-Jika Anda tertarik untuk berkontribusi pada proyek ini, harap lakukan **fork** repositori ini dan kirimkan **pull request**.
-
----
-
-## Catatan
+## **Catatan**
 
 * Semua dependensi yang dibutuhkan untuk proyek ini tercatat dalam file `MLProject/conda.yaml` dan `requirements.txt`.
 * Gunakan **MLflow** untuk melacak eksperimen dan menyimpan model yang telah dilatih.
 * CI/CD pipeline akan otomatis dijalankan untuk memastikan bahwa model berfungsi dengan baik pada setiap perubahan kode.
+
