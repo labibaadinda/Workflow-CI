@@ -26,15 +26,6 @@ Proyek ini bertujuan untuk memprediksi gangguan tidur berdasarkan data gaya hidu
 
 ---
 
-## **Persyaratan**
-
-1. **Python 3.9.2**
-2. **XGBoost**
-3. **MLflow**
-4. **Scikit-learn**
-
----
-
 ## **Setup dan Instalasi**
 
 ### 1. Clone repositori ini ke mesin lokal Anda:
