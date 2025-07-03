@@ -1,7 +1,3 @@
-Berikut adalah **README.md** yang bisa digunakan untuk proyek ini dengan penjelasan yang jelas dan terstruktur tentang alur kerja, cara setup, dan cara menjalankan proyek:
-
----
-
 # Sleep Health Prediction System: XGBoost Model
 
 **Deskripsi Proyek:**
