@@ -85,7 +85,8 @@ Proyek ini menggunakan **GitHub Actions** untuk otomatisasi pengujian, pembangun
 
 2. **Langkah-langkah Workflow:**
 
-   * **Checkout repository:** Mengambil kode dari repositori GitHub.
+   * **Checkout repository:** Mengambil kode dari repositori GitHub atau Link [Docker Hub](https://hub.docker.com/r/labibaadinda/xgb_model_image)
+ ini. 
    * **Set up Miniconda:** Menyiapkan environment dengan `conda.yaml` yang didefinisikan dalam folder `MLProject`.
    * **Pelatihan model menggunakan MLflow:** Model XGBoost akan dilatih dengan data yang ada dan hasilnya disimpan.
    * **Verifikasi model:** Memastikan bahwa file model yang telah dilatih ada sebelum di-upload.
