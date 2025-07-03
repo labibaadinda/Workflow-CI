@@ -1,7 +1,3 @@
-Berikut adalah revisi dan perbaikan pada README Anda:
-
----
-
 # **Sleep Health Prediction System: XGBoost Model**
 
 **Deskripsi Proyek:**
