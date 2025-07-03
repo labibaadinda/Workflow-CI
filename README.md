@@ -21,7 +21,7 @@ Proyek ini bertujuan untuk memprediksi gangguan tidur berdasarkan data gaya hidu
    * `modelling.py`: Kode untuk pelatihan model menggunakan XGBoost.
    * `conda.yaml`: File yang mendefinisikan lingkungan Python yang dibutuhkan untuk proyek.
 2. **.github/main.yml**: File berisi konfigurasi GitHub Actions untuk Continuous Integration.
-3. **Dockerfile**: Jika ingin menggunakan Docker untuk deployment model.
+3. **MLProject/dockerhub.txt**: Pull Docker untuk deployment model.
    Link: [Docker Hub](https://hub.docker.com/r/labibaadinda/xgb_model_image)
 
 ---
