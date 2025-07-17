@@ -14,7 +14,7 @@ Proyek ini bertujuan untuk membangun pipeline **Machine Learning** untuk **predi
 * **Deskripsi**:
 
   * Menggunakan file **`conda.yaml`** untuk membuat lingkungan Conda dengan dependensi yang diperlukan seperti `mlflow`, `xgboost`, `scikit-learn`, dan lainnya.
-  * Anda dapat menginstal environment menggunakan perintah:
+  * Install environment menggunakan perintah:
 
     ```bash
     conda env create -f conda.yaml
@@ -140,7 +140,7 @@ WORKFLOW-CI
 
 2. **Jalankan Pelatihan Model**:
 
-   * Anda bisa menjalankan pelatihan model secara manual menggunakan:
+   * Jalankan pelatihan model secara manual menggunakan:
 
      ```bash
      python modelling.py
