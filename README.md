@@ -152,5 +152,5 @@ WORKFLOW-CI
 
 4. **Buat dan Deploy Docker Image**:
 
-   * Setelah model dilatih, Docker image dibangun dan push ke Docker Hub secara otomatis.
+   * Setelah model dilatih, Docker image dibuild dan push ke Docker Hub secara otomatis.
 
