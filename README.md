@@ -1,118 +1,156 @@
-# **Sleep Health Prediction System: XGBoost Model**
+### Sleep Disorder Prediction using XGBoost 
 
-**Deskripsi Proyek:**
+## **Project Overview**
 
-Proyek ini bertujuan untuk memprediksi gangguan tidur berdasarkan data gaya hidup menggunakan model XGBoost. Model ini dilatih menggunakan data kesehatan tidur, dan dilengkapi dengan Continuous Integration (CI) menggunakan GitHub Actions untuk otomatisasi pengujian, pembangunan, dan deployment model.
-
----
-
-## **Fitur Utama**
-
-* **Model XGBoost:** Menggunakan XGBoost untuk membangun model prediksi gangguan tidur.
-* **CI/CD dengan GitHub Actions:** CI digunakan untuk otomatisasi pengujian dan deployment.
-* **MLflow:** Digunakan untuk mengelola siklus hidup model, mulai dari pelatihan hingga deployment.
+Proyek ini bertujuan untuk membangun pipeline **Machine Learning** untuk **prediksi sleep disorder** menggunakan **XGBoost** dengan integrasi **MLflow** untuk manajemen eksperimen dan **GitHub Actions** untuk **CI/CD**. Model yang dihasilkan kemudian akan dibangun menjadi **Docker Image** dan dipublikasikan ke **Docker Hub** untuk kemudahan deployment dan integrasi.
 
 ---
 
-## **Struktur Proyek**
+## **Alur Kerja Proyek**
 
-1. **MLProject/**: Folder yang berisi kode dan konfigurasi untuk pelatihan model.
+### 1. **Pengaturan Lingkungan (Environment Setup)**
 
-   * `modelling.py`: Kode untuk pelatihan model menggunakan XGBoost.
-   * `conda.yaml`: File yang mendefinisikan lingkungan Python yang dibutuhkan untuk proyek.
-2. **.github/main.yml**: File berisi konfigurasi GitHub Actions untuk Continuous Integration.
-3. **MLProject/dockerhub.txt**: Pull Docker untuk deployment model.
-   Link: [Docker Hub](https://hub.docker.com/r/labibaadinda/xgb_model_image)
+* **Tujuan**: Menyiapkan lingkungan untuk proyek ini menggunakan Conda.
+* **Deskripsi**:
+
+  * Menggunakan file **`conda.yaml`** untuk membuat lingkungan Conda dengan dependensi yang diperlukan seperti `mlflow`, `xgboost`, `scikit-learn`, dan lainnya.
+  * Anda dapat menginstal environment menggunakan perintah:
+
+    ```bash
+    conda env create -f conda.yaml
+    conda activate mlflow-enva
+    ```
+
+### 2. **Data Preparation**
+
+* **Tujuan**: Menyiapkan dataset untuk pelatihan model.
+* **Deskripsi**:
+
+  * Dataset yang digunakan adalah **`sleep-health_life-style_preprocessing.csv`** yang berisi data yang digunakan untuk memprediksi gangguan tidur.
+  * Kolom target yang diprediksi adalah **`Sleep Disorder`**.
+
+### 3. **Pengembangan Model (Model Development)**
+
+* **Tujuan**: Membangun dan melatih model **XGBoost** untuk prediksi gangguan tidur.
+* **Deskripsi**:
+
+  * **`modelling.py`** berfungsi untuk melatih model menggunakan **XGBoost** dan melakukan hyperparameter tuning menggunakan **GridSearchCV**.
+  * Model yang dilatih akan disimpan menggunakan **MLflow** dan file backup model disimpan dengan **Joblib**.
+
+  Langkah-langkah dalam **`modelling.py`**:
+
+  * Membaca dataset dan memisahkan fitur serta target.
+  * Melakukan pelatihan model dengan berbagai kombinasi hyperparameter.
+  * Menyimpan hasil eksperimen dan model yang terlatih di MLflow.
+  * Mengevaluasi performa model dengan metrik seperti akurasi, precision, recall, dan F1-score.
+
+  ```bash
+  python modelling.py
+  ```
+
+### 4. **Manajemen Eksperimen dengan MLflow**
+
+* **Tujuan**: Melacak dan mencatat hasil eksperimen menggunakan MLflow.
+* **Deskripsi**:
+
+  * Selama pelatihan, **MLflow** digunakan untuk:
+
+    * Mencatat metrik performa model seperti **accuracy**, **precision**, **recall**, dan **f1-score**.
+    * Menyimpan model terbaik di dalam direktori **MLflow model**.
+    * Mencatat artefak seperti file model menggunakan **Joblib**.
+
+  **Contoh Penggunaan**:
+
+  * Semua eksperimen akan tercatat di **MLflow** untuk memastikan pelatihan model dapat diulang dan divalidasi kapan saja.
+
+### 5. **Automatisasi Pelatihan dan Deploy Menggunakan GitHub Actions**
+
+* **Tujuan**: Mengotomatiskan pelatihan model dengan CI/CD menggunakan **GitHub Actions**.
+* **Deskripsi**:
+
+  * **GitHub Actions** digunakan untuk memicu workflow pelatihan model ketika ada perubahan pada branch `main` atau saat pull request dibuat.
+  * Workflow akan melakukan:
+
+    1. Mengatur environment Conda.
+    2. Menjalankan pelatihan model menggunakan **MLflow**.
+    3. Verifikasi model yang dilatih.
+    4. Meng-upload model yang dilatih ke GitHub sebagai artefak.
+    5. Membangun Docker image dari model yang dilatih.
+
+
+
+### 6. **Pembuatan Docker Image dan Deployment**
+
+* **Tujuan**: Membangun dan mendorong Docker image ke Docker Hub.
+* **Deskripsi**:
+
+  * Setelah model dilatih, **MLflow** digunakan untuk membangun **Docker image** yang berisi model.
+  * Docker image kemudian didorong ke **Docker Hub** untuk deployment lebih lanjut.
+  * Langkah-langkah di **GitHub Actions** mengotomatisasi proses ini.
+
+  **Docker Build Example**:
+
+  ```bash
+  mlflow models build-docker -m "file://$(pwd)/xgboost_model_dir" --name xgb_model_image
+  ```
+
+### 7. **Verifikasi dan Pengujian**
+
+* **Tujuan**: Memastikan bahwa seluruh pipeline berfungsi dengan benar.
+* **Deskripsi**:
+
+  * Setelah pipeline berjalan, pastikan model yang dilatih telah disimpan dengan benar dan Docker image dapat di build dan di push ke Docker Hub tanpa error.
+
 
 ---
 
-## **Setup dan Instalasi**
+## **Struktur Direktori**
 
-### 1. Clone repositori ini ke mesin lokal Anda:
+```plaintext
+WORKFLOW-CI
+├── MLProject/
+│   ├── conda.yaml                        # File environment untuk Conda
+│   ├── dockerhub.txt                     # File kredensial untuk Docker Hub
+│   ├── MLproject                         # File konfigurasi MLflow Project
+│   ├── modelling.py                      # Script pelatihan model
+│   ├── requirements.txt                  # Daftar dependensi Python
+│   ├── sleep-health_life-style_preprocessing.csv  # Dataset
+│   └── xgboost_best_model.joblib         # Model XGBoost terbaik yang disimpan
+├── .github/
+│   └── workflows/
+│       └── main.yml                      # GitHub Actions CI/CD pipeline
+├── mlruns/                               # Direktori MLflow untuk menyimpan artefak eksperimen
+├── xgboost_model_dir                     # Direktori model yang disimpan oleh MLflow
+└── README.md                             # Dokumentasi proyek
 
-```bash
-git clone https://github.com/labibaadinda/Workflow-CI
 ```
 
-### 2. Buat dan aktifkan environment menggunakan Conda:
-
-```bash
-conda env create -f MLProject/conda.yaml
-conda activate mlflow-env
-```
-
-### 3. Install dependensi yang diperlukan:
-
-```bash
-cd MLProject
-pip install -r requirements.txt
-```
-
 ---
 
-## **Pelatihan Model**
+### **Bagaimana Cara Menggunakan Proyek Ini?**
 
-Proyek ini menggunakan **MLflow** untuk melatih model dan menyimpan artefak pelatihan. Anda dapat melatih model menggunakan file `modelling.py`.
+1. **Install Dependencies**:
 
-1. **Jalankan pelatihan model dengan perintah berikut:**
+   * Gunakan Conda untuk membuat environment:
 
-```bash
-python MLProject/modelling.py
-```
+     ```bash
+     conda env create -f conda.yaml
+     conda activate mlflow-enva
+     ```
 
-2. **Model akan dilatih menggunakan XGBoost dengan parameter yang telah ditentukan. Setelah pelatihan, model akan disimpan ke dalam direktori `xgboost_model_dir`.**
+2. **Jalankan Pelatihan Model**:
 
----
+   * Anda bisa menjalankan pelatihan model secara manual menggunakan:
 
-## **Workflow CI dengan GitHub Actions**
+     ```bash
+     python modelling.py
+     ```
 
-Proyek ini menggunakan **GitHub Actions** untuk otomatisasi pengujian, pembangunan, dan deployment model.
+3. **Automatisasi dengan GitHub Actions**:
 
-### Deskripsi Workflow:
+   * Pastikan GitHub Actions diatur untuk memicu pelatihan model pada push ke branch `main`.
 
-1. **CI Pipeline Trigger:**
+4. **Buat dan Deploy Docker Image**:
 
-   * Workflow akan dijalankan setiap kali ada perubahan pada branch `main` atau pull request yang mengarah ke branch tersebut.
-
-2. **Langkah-langkah Workflow:**
-
-   * **Checkout repository:** Mengambil kode dari repositori GitHub atau Link [Docker Hub](https://hub.docker.com/r/labibaadinda/xgb_model_image)
- ini. 
-   * **Set up Miniconda:** Menyiapkan environment dengan `conda.yaml` yang didefinisikan dalam folder `MLProject`.
-   * **Pelatihan model menggunakan MLflow:** Model XGBoost akan dilatih dengan data yang ada dan hasilnya disimpan.
-   * **Verifikasi model:** Memastikan bahwa file model yang telah dilatih ada sebelum di-upload.
-   * **Upload model ke GitHub:** Menyimpan model sebagai artefak.
-   * **Build Docker Image:** Membuat image Docker untuk model yang telah dilatih.
-   * **Login dan Push Docker Image ke Docker Hub:** Login ke Docker Hub dan meng-upload image ke Docker Hub.
-
-### File Workflow CI:
-
-File konfigurasi workflow berada pada `Workflow-CI/main.yml`.
-
----
-
-## **Penggunaan Docker**
-
-1. **Build Docker image dari model yang telah dilatih:**
-
-```bash
-mlflow models build-docker -m "file://$(pwd)/xgboost_model_dir" --name xgb_model_image
-```
-
-2. **Login ke Docker Hub dan push image ke Docker Hub:**
-
-```bash
-docker login -u <your-docker-hub-username> -p <your-docker-hub-access-token>
-docker tag xgb_model_image:latest <your-docker-hub-username>/xgb_model_image:latest
-docker push <your-docker-hub-username>/xgb_model_image:latest
-```
-
----
-
-
-## **Catatan**
-
-* Semua dependensi yang dibutuhkan untuk proyek ini tercatat dalam file `MLProject/conda.yaml` dan `requirements.txt`.
-* Gunakan **MLflow** untuk melacak eksperimen dan menyimpan model yang telah dilatih.
-* CI/CD pipeline akan otomatis dijalankan untuk memastikan bahwa model berfungsi dengan baik pada setiap perubahan kode.
+   * Setelah model dilatih, Docker image dibangun dan push ke Docker Hub secara otomatis.
 
